@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Anúncio | Registo de Interesse</title>
+    <link rel="stylesheet" href="css/cadastro.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-titulo"> <img src="images/logo.png" alt="logo" width="100" height="100">
+            <h1>Sally Motors</h1>
+        </div>
+        <nav class="header-nav">
+            <a href="index.html">Voltar à Busca</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Container para os detalhes do anúncio -->
+        <section class="detalhes-anuncio" id="detalhes-container">
+            <h2>A carregar detalhes do anúncio...</h2>
+        </section>
+
+        <!-- Container para o formulário de interesse -->
+        <div class="form-container">
+            <form id="form-interesse">
+                <div class="form-header">
+                    <h1>Interessado(a)? Preencha o Formulário e deixe sua mensagem!!</h1>
+                </div>
+
+                <input type="hidden" id="idAnuncio" name="idAnuncio">
+
+                <div class="form-group"> <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" name="telefone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mensagem">Mensagem</label>
+                    <textarea id="mensagem" name="mensagem" rows="5" required></textarea>
+                </div>
+
+                <div> <button type="submit">Enviar Mensagem</button> </div>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <div>
+            <p>&copy; 2025 Sally Motors. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Função para carregar os detalhes do anúncio
+        async function carregarDetalhes() {
+            const container = document.getElementById('detalhes-container');
+            const urlParams = new URLSearchParams(window.location.search);
+            const idAnuncio = urlParams.get('id');
+
+            // Coloca o ID no campo escondido do formulário
+            // para quando o usuário enviar a mensagem saber qual carro ele se refere
+            document.getElementById('idAnuncio').value = idAnuncio;
+
+            // Verifica se o ID do anúncio foi fornecido
+            if (!idAnuncio) {
+                container.innerHTML = '<h2>Erro</h2><p>ID do anúncio não especificado.</p>';
+                document.getElementById('form-interesse').style.display = 'none'; // Esconde o formulário
+                return;
+            }
+
+            try {
+                const response = await fetch(`php/controlador.php?acao=getAnuncioDetalhes&id=${idAnuncio}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    const anuncio = result.data;
+                    let fotosHtml = ''; // String vazia para as fotos
+
+                    // Se o anúncio tiver várias fotos, passa por cada uma delas
+                    anuncio.fotos.forEach(foto => {
+                        // e monta uma tag <img> para cada foto, adicionando à string
+                        fotosHtml += `<img src="uploads/${foto}" alt="Foto de ${anuncio.Modelo}" width="200" height="200">`;
+                    });
+
+                    // Aqui coloca todo o HTML dentro da seção de detalhes,
+                    // substituindo a mensagem de "carregando...""
+                    container.innerHTML = `
+                        <h2>${anuncio.Marca} ${anuncio.Modelo}</h2>
+                        <div class="anuncio-detalhado">
+                            <div class="fotos">${fotosHtml}</div>
+                            <div class="info">
+                                <p><strong>Ano:</strong> ${anuncio.Ano}</p>
+                                <p><strong>Cor:</strong> ${anuncio.Cor}</p>
+                                <p><strong>KM:</strong> ${anuncio.Quilometragem}</p>
+                                <p><strong>Valor:</strong> R$ ${parseFloat(anuncio.Valor).toFixed(2)}</p>
+                                <p><strong>Local:</strong> ${anuncio.Cidade} - ${anuncio.Estado}</p>
+                                <p><strong>Descrição:</strong> ${anuncio.Descricao || 'N/A'}</p>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `<h2>Erro</h2><p>${result.message}</p>`;
+                    document.getElementById('form-interesse').style.display = 'none'; // Esconde o formulário
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+                container.innerHTML = '<h2>Erro de comunicação</h2>';
+            }
+        }
+
+        // Script para enviar o formulário de interesse
+        document.getElementById('form-interesse').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('php/controlador.php?acao=registrarInteresse', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                alert(result.message); // O servidor vai mandar uma resposta ("Mensagem enviada!" ou "Erro!")
+                if (result.success) {
+                    form.reset(); // Limpa o formulário
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro de comunicação.');
+            }
+        });
+
+        // Carrega os detalhes quando a página é aberta
+        document.addEventListener('DOMContentLoaded', carregarDetalhes);
+    </script>
+</body>
+
+</html>

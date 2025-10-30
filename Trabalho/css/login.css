@@ -1,0 +1,147 @@
+  /* Estilização da página de login */
+
+  body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: lightgoldenrodyellow;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+  }
+
+
+  header {
+      display: flex;
+      background-color: lightpink;
+      padding: 10px;
+      justify-content: center;
+      align-items: center;
+  }
+
+  header .logo-titulo { /* classe para agrupar logo e título */
+      display: flex;
+      align-items: center;
+  }
+
+
+  header img {
+      margin-right: 10px;
+      height: 70px;
+      width: 70px;  /* largura fixa para a imagem */
+      border-radius: 50%; /*  imagem redonda */
+      object-fit: cover; /* garante que a imagem preencha o espaço sem distorção */
+  }
+
+  header h1 {
+      color: white;
+      margin: 0; /* remove margem padrão do h1 */
+      font-size: 1.5em; /* ajusta o tamanho da fonte do título */
+  }
+
+  main {
+      background-color: white;
+      color: gray;
+      max-width: 350px;
+      width: 100%;
+      padding: 1.5rem;
+      border: 1px solid pink;
+      box-shadow: 0 0 10px pink;
+      box-sizing: border-box;
+      border-radius: 5px;
+      margin: auto; /* centraliza o conteúdo principal e adiciona margem */
+      display: flex;
+      flex-direction: column;
+  }
+
+
+  footer {
+      background-color: lightpink;
+      color: white;
+      text-align: center;
+      padding: 10px;
+  }
+
+  footer p {
+      margin: 0;  /* remove margem padrão do parágrafo */
+  }
+
+  input,
+  button {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 4px;
+      box-sizing: border-box;
+      border: 1px solid pink;
+  }
+
+  input:focus {
+      border-color: pink;
+      box-shadow: 0 0 10px pink;
+      outline: none;
+  }
+
+  button {
+      background-color: lightpink;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-color: gray;
+      color: white;
+      cursor: pointer;
+  }
+
+  a:link,
+  a:visited {
+      /* text-decoration: none; */
+      color: gray;
+  }
+
+  a:hover,
+  a:active {
+      color: lightgray;
+      /* text-decoration: none; */
+  }
+
+  /* div que agrupa os links */
+.header-nav {
+    position: absolute;
+    /* Posiciona o grupo inteiro */
+    right: 30px;
+    display: flex;
+    /* Para alinhar os links lado a lado */
+    gap: 20px;
+    /* Adiciona um espaço */
+}
+
+/* Estilo para os links (sem posicionamento) */
+.header-nav a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media (max-width: 400px) {
+    main {
+        width: 100%;
+    }
+}
+
+/* Media Query para telas pequenas */
+@media (max-width: 768px) {
+
+    header {
+        /* Muda a direção do flex para coluna, empilhando os itens */
+        flex-direction: column;
+        /* Adiciona um espaço entre o logo e os links */
+        gap: 10px;
+        padding: 15px 20px;
+    }
+
+    .header-nav {
+        /* Traz os links de volta para o fluxo normal do layout */
+        position: static;
+        /* gap do header já ajusta o espaçamento */
+    }
+
+}
